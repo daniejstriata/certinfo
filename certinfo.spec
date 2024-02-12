@@ -1,6 +1,6 @@
 Name: certinfo
 Version: 1.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Certificate Information Tool
 License: MIT
 URL: https://github.com/daniejstriata/certinfo
@@ -19,6 +19,7 @@ Certinfo is a tool to display information from X.509 certificates.
 
 %build
 gcc -o certinfo certinfo.c -lssl -lcrypto
+strip certinfo
 
 %install
 mkdir -p %{buildroot}/%{_bindir}
@@ -28,5 +29,7 @@ install -m 755 certinfo %{buildroot}/%{_bindir}
 %{_bindir}/certinfo
 
 %changelog
+* Mon Feb 12 2024 Danie de Jager <danie.dejager@gmail.com> - 1.0-2
+- remove debug info.
 * Mon Feb 12 2024 Danie de Jager <danie.dejager@gmail.com> - 1.0-1
-- Initial release
+- Initial release.
