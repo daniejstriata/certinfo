@@ -1,0 +1,77 @@
+#!/bin/sh
+
+# Configure script for certinfo
+
+# Default compiler
+CC=gcc
+
+# Default compilation flags for modern GCC versions
+MODERN_CFLAGS="-Wall -Wextra -std=c99"
+
+# Default compilation flags for older GCC versions (e.g., CentOS 7)
+OLDER_CFLAGS="-Wall -Wextra"
+
+# Default OpenSSL libraries
+LIBS="-lssl -lcrypto"
+
+# Output executable
+EXE=certinfo
+
+# Check for user-specified compiler
+if [ -n "$CC" ]; then
+  echo "Using compiler: $CC"
+else
+  echo "No compiler specified. Using default (gcc)."
+  CC=gcc
+fi
+
+# Check for user-specified compilation flags
+if [ -n "$CFLAGS" ]; then
+  echo "Using user-specified compilation flags: $CFLAGS"
+else
+  # Determine GCC version
+  GCC_VERSION=$(gcc -dumpversion | cut -f1 -d.)
+
+  # Set compilation flags based on GCC version
+  if [ "$GCC_VERSION" -ge 5 ]; then
+    CFLAGS="$MODERN_CFLAGS"
+  else
+    CFLAGS="$OLDER_CFLAGS"
+  fi
+
+  echo "Using compilation flags: $CFLAGS"
+fi
+
+# Check for user-specified OpenSSL libraries
+if [ -n "$LIBS" ]; then
+  echo "Using OpenSSL libraries: $LIBS"
+else
+  echo "No OpenSSL libraries specified. Using default libraries."
+  LIBS="-lssl -lcrypto"
+fi
+
+# Generate Makefile
+cat > Makefile <<EOF
+# Makefile for certinfo
+
+CC = $CC
+CFLAGS = $CFLAGS
+LDFLAGS = $LIBS
+
+SRC = src/certinfo.c
+OBJ = \$(SRC:.c=.o)
+EXE = $EXE
+
+all: \$(EXE)
+
+\$(EXE): \$(OBJ)
+	\$(CC) \$(CFLAGS) \$(OBJ) -o \$(EXE) \$(LDFLAGS)
+
+%.o: %.c
+	\$(CC) \$(CFLAGS) -c \$< -o \$@
+
+clean:
+	rm -f \$(OBJ) \$(EXE)
+EOF
+
+echo "Configuration complete. Run 'make' to build the executable."
