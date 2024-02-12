@@ -19,7 +19,7 @@ Certinfo is a tool to display information from X.509 certificates.
 
 %build
 %configure
-%make_build
+make CFLAGS="%{optflags} -std=c99" %{?_smp_mflags}
 
 %install
 mkdir -p %{buildroot}/%{_bindir}
