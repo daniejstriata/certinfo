@@ -16,7 +16,6 @@ Certinfo is a tool to display information from X.509 certificates.
 
 %prep
 %autosetup -n certinfo-%{version}
-autoreconf -i
 
 %build
 %configure
