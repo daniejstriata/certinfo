@@ -1,1 +1,2 @@
-
+to compile:
+`gcc -o certinfo certinfo.c -lssl -lcrypto`
