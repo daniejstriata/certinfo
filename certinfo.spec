@@ -21,7 +21,8 @@ Certinfo is a tool to display information from X.509 certificates.
 gcc -o certinfo certinfo.c -lssl -lcrypto
 
 %install
-make install DESTDIR=%{buildroot}
+mkdir -p %{buildroot}/%{_bindir}
+install -m 755 certinfo %{buildroot}/%{_bindir}
 
 %files
 %{_bindir}/certinfo
