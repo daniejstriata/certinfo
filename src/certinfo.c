@@ -5,11 +5,32 @@
 #include <openssl/pem.h>
 #include <openssl/asn1.h>
 #include <openssl/x509v3.h>
+#include <time.h>
 
 // Structure to represent a certificate
 struct Certificate {
     X509* cert;
 };
+
+// Function to get the current time
+time_t getCurrentTime() {
+    return time(NULL);
+}
+
+// Function to convert ASN1_TIME to a time_t structure
+time_t ASN1_TIME_to_time_t(ASN1_TIME* asn1_time) {
+    struct tm time_struct;
+    if (!ASN1_TIME_to_tm(asn1_time, &time_struct)) {
+        return -1;
+    }
+    return mktime(&time_struct);
+}
+
+// Function to calculate the difference between two time_t values in days
+int calculateDaysDifference(time_t time1, time_t time2) {
+    return (int)difftime(time2, time1) / (60 * 60 * 24);
+}
+
 
 // Function to get a string representation of ASN1_STRING
 char* ASN1_STRING_to_string(const ASN1_STRING* asn1_string) {
@@ -80,9 +101,15 @@ void processCertificate(struct Certificate* cert, int certNumber) {
     ASN1_TIME* not_after = X509_get_notAfter(cert->cert);
     printf("\t\033[33mValid from:\033[0m %s\n", ASN1_TIME_to_string(not_before));
 
-    // Check if the certificate has expired
+    // Check if the certificate has expired or is within 2 weeks of expiry
+    time_t current_time = getCurrentTime();
+    time_t expiry_time = ASN1_TIME_to_time_t(not_after);
+    int days_until_expiry = calculateDaysDifference(current_time, expiry_time);
+
     if (X509_cmp_time(not_after, 0) < 0) {
         printf("\t\033[1;31mValid until:\033[0m \033[1;31m%s (Expired)\033[0m\n", ASN1_TIME_to_string(not_after));
+    } else if (days_until_expiry <= 14) {
+        printf("\t\033[38;5;208mValid until:\033[0m \033[38;5;208m%s (Within 2 weeks)\033[0m\n", ASN1_TIME_to_string(not_after));
     } else {
         printf("\t\033[33mValid until:\033[0m %s\n", ASN1_TIME_to_string(not_after));
     }
@@ -99,6 +126,7 @@ void processCertificate(struct Certificate* cert, int certNumber) {
         GENERAL_NAMES_free(san_names);
     }
 }
+
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
