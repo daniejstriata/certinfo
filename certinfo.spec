@@ -18,8 +18,7 @@ Certinfo is a tool to display information from X.509 certificates.
 %autosetup -n certinfo-%{version}
 
 %build
-%configure
-make %{?_smp_mflags}
+gcc -o certinfo certinfo.c -lssl -lcrypto
 
 %install
 make install DESTDIR=%{buildroot}
