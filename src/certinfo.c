@@ -7,8 +7,6 @@
 #include <openssl/x509v3.h>
 #include <time.h>
 
-#include <openssl/asn1.h>
-
 // Function to convert ASN1_TIME to a time_t structure
 time_t ASN1_TIME_to_time_t(ASN1_TIME* asn1_time);
 
@@ -26,10 +24,17 @@ int ASN1_TIME_to_tm(const ASN1_TIME* asn1_time, struct tm* tm_result) {
     memcpy(buffer, asn1_time->data, len);
     buffer[len] = '\0';
 
-    // Convert ASN1_TIME string to struct tm
+    // Convert ASN1_TIME string to struct tm (if available)
+    // Note: strptime is not standard and may not be available on all platforms
+#if defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 200809L
     if (strptime(buffer, "%Y%m%d%H%M%S", tm_result) == NULL) {
         return 0;
     }
+#else
+    // Handle the case where strptime is not available
+    // You may need to implement your own parsing logic here
+    return 0;
+#endif
 
     return 1;
 }
