@@ -1,5 +1,5 @@
 Name: certinfo
-Version: 1.1
+Version: 1.1.1
 Release: 1%{?dist}
 Summary: Certificate Information Tool
 License: MIT
