@@ -1,4 +1,4 @@
-to compile manually:
+to compile:
 ```
 ./configure
 make
