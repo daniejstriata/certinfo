@@ -7,49 +7,6 @@
 #include <openssl/x509v3.h>
 #include <time.h>
 
-// Function to convert ASN1_TIME to a time_t structure
-time_t ASN1_TIME_to_time_t(ASN1_TIME* asn1_time);
-
-// Function to convert ASN1_TIME to struct tm
-int ASN1_TIME_to_tm(const ASN1_TIME* asn1_time, struct tm* tm_result) {
-    char buffer[16];  // Ensure enough space for "YYYYMMDDHHMMSSZ"
-    size_t len = asn1_time->length;
-
-    // Check if the ASN1_TIME string is too long
-    if (len > sizeof(buffer) - 1) {
-        return 0;
-    }
-
-    // Copy the ASN1_TIME string to a buffer
-    memcpy(buffer, asn1_time->data, len);
-    buffer[len] = '\0';
-
-    // Convert ASN1_TIME string to struct tm (if available)
-    // Note: strptime is not standard and may not be available on all platforms
-#if defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 200809L
-    if (strptime(buffer, "%Y%m%d%H%M%S", tm_result) == NULL) {
-        return 0;
-    }
-#else
-    // Handle the case where strptime is not available
-    // You may need to implement your own parsing logic here
-    return 0;
-#endif
-
-    return 1;
-}
-
-// Function to convert ASN1_TIME to a time_t structure
-time_t ASN1_TIME_to_time_t(ASN1_TIME* asn1_time) {
-    struct tm time_struct;
-
-    if (!ASN1_TIME_to_tm(asn1_time, &time_struct)) {
-        return -1;
-    }
-
-    return mktime(&time_struct);
-}
-
 // Structure to represent a certificate
 struct Certificate {
     X509* cert;
