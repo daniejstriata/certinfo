@@ -1,6 +1,6 @@
 Name: certinfo
-Version: 1.0
-Release: 2%{?dist}
+Version: 1.1
+Release: 1%{?dist}
 Summary: Certificate Information Tool
 License: MIT
 URL: https://github.com/daniejstriata/certinfo
@@ -8,7 +8,7 @@ Source0: https://github.com/daniejstriata/certinfo/archive/refs/tags/%{version}.
 
 %define debug_package %{nil}
 
-BuildRequires: gcc
+BuildRequires: gcc-c++
 BuildRequires: openssl-devel
 
 %description
@@ -29,6 +29,8 @@ install -m 755 certinfo %{buildroot}/%{_bindir}
 %{_bindir}/certinfo
 
 %changelog
+* Mon Feb 12 2024 Danie de Jager <danie.dejager@gmail.com> - 1.1-1
+- Process SAN entries.
 * Mon Feb 12 2024 Danie de Jager <danie.dejager@gmail.com> - 1.0-2
 - remove debug info.
 * Mon Feb 12 2024 Danie de Jager <danie.dejager@gmail.com> - 1.0-1
