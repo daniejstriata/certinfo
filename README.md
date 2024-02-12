@@ -1,6 +1,11 @@
-to compile :
-`gcc -o certinfo certinfo.c -lssl -lcrypto`
-certinfo chain.crt
+to compile manually:
+```
+./configure
+make
+```
+
+Example:
+`certinfo chain.crt`
 ```
 #1 - Common Name (CN): R3
 	Valid from: Sep  4 00:00:00 2020 GMT
