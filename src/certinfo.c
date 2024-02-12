@@ -12,11 +12,25 @@ struct Certificate {
 };
 
 // Function to get a string representation of ASN1_STRING
-char* ASN1_STRING_to_string(ASN1_STRING* asn1_string) {
-    char* result = NULL;
-    int length = ASN1_STRING_to_UTF8((unsigned char**)&result, asn1_string);
-    return result;
-}
+char* ASN1_STRING_to_string(const ASN1_STRING* asn1_string) {
+    if (!asn1_string) {
+        return NULL;
+    }
+
+    // Create a non-const copy of the ASN.1 string
+       ASN1_STRING* non_const_asn1_string = ASN1_STRING_dup(asn1_string);
+            if (!non_const_asn1_string) {
+                    return NULL;
+            }
+    
+       char* result = NULL;
+       ASN1_STRING_to_UTF8((unsigned char**)&result, non_const_asn1_string);
+
+       // Free the non-const copy
+       ASN1_STRING_free(non_const_asn1_string);
+    
+       return result;
+ }
 
 // Function to convert ASN1_TIME to a human-readable string
 char* ASN1_TIME_to_string(ASN1_TIME* asn1_time) {

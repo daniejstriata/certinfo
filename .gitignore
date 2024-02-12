@@ -1,1 +1,3 @@
 Makefile
+certinfo
+src/certinfo.o

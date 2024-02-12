@@ -18,8 +18,8 @@ Certinfo is a tool to display information from X.509 certificates.
 %autosetup -n certinfo-%{version}
 
 %build
-gcc -o certinfo certinfo.c -lssl -lcrypto
-strip certinfo
+%configure
+%make_build
 
 %install
 mkdir -p %{buildroot}/%{_bindir}
