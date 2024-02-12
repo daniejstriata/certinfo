@@ -7,10 +7,16 @@
 #include <openssl/x509v3.h>
 #include <time.h>
 
-int ASN1_TIME_to_tm(const ASN1_TIME *asn1_time, struct tm *tm_result) {
+#include <openssl/asn1.h>
+
+// Function to convert ASN1_TIME to a time_t structure
+time_t ASN1_TIME_to_time_t(ASN1_TIME* asn1_time);
+
+// Function to convert ASN1_TIME to struct tm
+int ASN1_TIME_to_tm(const ASN1_TIME* asn1_time, struct tm* tm_result) {
     char buffer[16];  // Ensure enough space for "YYYYMMDDHHMMSSZ"
     size_t len = asn1_time->length;
-    
+
     // Check if the ASN1_TIME string is too long
     if (len > sizeof(buffer) - 1) {
         return 0;
