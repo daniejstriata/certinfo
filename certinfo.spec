@@ -1,5 +1,5 @@
 Name: certinfo
-Version: 1.1.1
+Version: 1.1.2
 Release: 1%{?dist}
 Summary: Certificate Information Tool
 License: MIT
@@ -29,6 +29,7 @@ install -m 755 certinfo %{buildroot}/%{_bindir}
 %{_bindir}/certinfo
 
 %changelog
+* Wed Oct 2 2024 Danie de Jager <danie.dejager@gmail.com> - 1.1.2-1
 * Mon Feb 12 2024 Danie de Jager <danie.dejager@gmail.com> - 1.1-1
 - Process SAN entries.
 * Mon Feb 12 2024 Danie de Jager <danie.dejager@gmail.com> - 1.0-2
