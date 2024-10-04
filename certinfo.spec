@@ -1,6 +1,6 @@
 Name: certinfo
 Version: 1.1.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Certificate Information Tool
 License: MIT
 URL: https://github.com/daniejstriata/certinfo
