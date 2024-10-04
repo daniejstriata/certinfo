@@ -73,10 +73,27 @@ void processCertificate(X509* cert, int certNumber) {
     }
 }
 
+void print_help(const char* program_name) {
+    std::cout << "Usage: " << program_name << " <path_to_pem_bundle>" << std::endl;
+    std::cout << "Options:" << std::endl;
+    std::cout << "  --help     Display this help message" << std::endl;
+    std::cout << "  --version  Display version information" << std::endl;
+}
+
 int main(int argc, char* argv[]) {
     if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " <path_to_pem_bundle>" << std::endl;
+        print_help(argv[0]);
         return 1;
+    }
+
+    if (argc == 2 && std::string(argv[1]) == "--help") {
+        print_help(argv[0]);
+        return 0;
+    }
+
+    if (argc == 2 && std::string(argv[1]) == "--version") {
+        std::cout << "certinfo version 1.1.2" << std::endl;
+        return 0;
     }
 
     const char* bundle_path = argv[1];

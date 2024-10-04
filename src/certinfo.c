@@ -6,8 +6,8 @@
 #include <openssl/asn1.h>
 #include <openssl/x509v3.h>
 
-#define MAX_CERTS 100
 #define MAX_STRING_LENGTH 256
+#define VERSION "1.1.3"
 
 // Function to print help message
 void print_help(const char* program_name) {
@@ -87,18 +87,18 @@ void processCertificate(X509* cert, int certNumber) {
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
-        fprintf(stderr, "Usage: %s <path_to_pem_bundle>\n", argv[0]);
-        fprintf(stderr, "Use --help for more information.\n");
+        fprintf(stderr, "Usage: %s <path_to_certificate_bundle>\n", argv[0]);
         return 1;
     }
 
-    if (strcmp(argv[1], "--help") == 0) {
-        print_help(argv[0]);
+    if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0) {
+        printf("Usage: %s <path_to_certificate_bundle>\n", argv[0]);
+        printf("Displays information about certificates in a PEM bundle.\n");
         return 0;
     }
 
-    if (strcmp(argv[1], "--version") == 0) {
-        printf("certinfo version 1.1.2\n");
+    if (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-v") == 0) {
+        printf("certinfo version %s\n", VERSION);
         return 0;
     }
 
@@ -110,12 +110,36 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    X509* certs[MAX_CERTS];
+    X509** certs = NULL;
     int cert_count = 0;
+    int cert_capacity = 10;  // Start with space for 10 certs
 
-    while (cert_count < MAX_CERTS) {
+    certs = (X509**)malloc(cert_capacity * sizeof(X509*));
+    if (!certs) {
+        fprintf(stderr, "Memory allocation failed\n");
+        fclose(bundle_file);
+        return 1;
+    }
+
+    while (1) {
         X509* cert = PEM_read_X509(bundle_file, NULL, NULL, NULL);
         if (!cert) break;
+
+        if (cert_count >= cert_capacity) {
+            cert_capacity *= 2;
+            X509** new_certs = (X509**)realloc(certs, cert_capacity * sizeof(X509*));
+            if (!new_certs) {
+                fprintf(stderr, "Memory reallocation failed\n");
+                for (int i = 0; i < cert_count; ++i) {
+                    X509_free(certs[i]);
+                }
+                free(certs);
+                fclose(bundle_file);
+                return 1;
+            }
+            certs = new_certs;
+        }
+
         certs[cert_count++] = cert;
     }
 
@@ -123,6 +147,7 @@ int main(int argc, char* argv[]) {
 
     if (cert_count == 0) {
         fprintf(stderr, "No certificates found in the bundle\n");
+        free(certs);
         return 1;
     }
 
@@ -130,6 +155,8 @@ int main(int argc, char* argv[]) {
         processCertificate(certs[i], i + 1);
         X509_free(certs[i]);
     }
+
+    free(certs);
 
     return 0;
 }

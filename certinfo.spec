@@ -1,6 +1,6 @@
 Name: certinfo
-Version: 1.1.2
-Release: 2%{?dist}
+Version: 1.1.3
+Release: 1%{?dist}
 Summary: Certificate Information Tool
 License: MIT
 URL: https://github.com/daniejstriata/certinfo
@@ -29,6 +29,8 @@ install -m 755 certinfo %{buildroot}/%{_bindir}
 %{_bindir}/certinfo
 
 %changelog
+* Fri Oct 4 2024 Danie de Jager <danie.dejager@gmail.com> - 1.1.3-1
+- Fix for cert counter limit.
 * Wed Oct 2 2024 Danie de Jager <danie.dejager@gmail.com> - 1.1.2-1
 * Mon Feb 12 2024 Danie de Jager <danie.dejager@gmail.com> - 1.1-1
 - Process SAN entries.
