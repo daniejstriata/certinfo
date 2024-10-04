@@ -9,6 +9,14 @@
 #define MAX_CERTS 100
 #define MAX_STRING_LENGTH 256
 
+// Function to print help message
+void print_help(const char* program_name) {
+    printf("Usage: %s <path_to_pem_bundle>\n", program_name);
+    printf("Options:\n");
+    printf("  --help     Display this help message\n");
+    printf("  --version  Display version information\n");
+}
+
 // Function to convert ASN1_TIME to a human-readable string
 void ASN1_TIME_to_string(const ASN1_TIME* asn1_time, char* result, size_t result_size) {
     BIO* bio = BIO_new(BIO_s_mem());
@@ -80,11 +88,17 @@ void processCertificate(X509* cert, int certNumber) {
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         fprintf(stderr, "Usage: %s <path_to_pem_bundle>\n", argv[0]);
+        fprintf(stderr, "Use --help for more information.\n");
         return 1;
     }
 
+    if (strcmp(argv[1], "--help") == 0) {
+        print_help(argv[0]);
+        return 0;
+    }
+
     if (strcmp(argv[1], "--version") == 0) {
-        printf("certinfo version 1.1\n");
+        printf("certinfo version 1.1.2\n");
         return 0;
     }
 
